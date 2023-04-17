@@ -31,7 +31,8 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       localizationData.forEach((key, value) {
         result[key] = value[locale.locale];
       });
-      var text = jsonEncode(result);
+      var encoder = const JsonEncoder.withIndent('  ');
+      var text = encoder.convert(result);
       localeFile.writeAsStringSync(text, mode: FileMode.write);
 
       Process.run(
@@ -67,14 +68,13 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
   }
 
   _onUserDeletedKey(
-      UserDeletedKeyEvent event,
-      Emitter<ProjectState> emit,
-      ) {
+    UserDeletedKeyEvent event,
+    Emitter<ProjectState> emit,
+  ) {
     var key = event.key;
     emit(state.deleteKey(key));
     add(UserTriggerSaveEvent());
   }
-
 
   _onUserSelectedProject(
     UserSelectedProjectEvent event,
