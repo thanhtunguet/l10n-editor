@@ -1,0 +1,16 @@
+{
+  "@@locale": "en",
+  "action_save": "Save",
+  "add_key": "Add new key",
+  "home_guide_text": "Open Flutter or React project to edit",
+  "no_data_here": "No data here",
+  "action_open": "Open",
+  "key_not_null": "Key cannot be null",
+  "action_ok": "OK",
+  "keyword_not_deleted": "Keyword Not Removed",
+  "keyword_not_deleted_desc": "File's keyword can not be removed",
+  "enter_figma_api_key": "Enter Figma's API key:",
+  "figma_api_key": "Api key:",
+  "figma_config_page": "Figma Config",
+  "greeting_text": ""
+}

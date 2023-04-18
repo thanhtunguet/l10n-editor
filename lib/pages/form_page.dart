@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:l10n_manipulator/blocs/project/project_bloc.dart';
+import 'package:l10n_manipulator/config/consts.dart';
+import 'package:l10n_manipulator/manipulator_app.dart';
+import 'package:l10n_manipulator/pages/manipulator_home_page.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
 @reflector
@@ -14,10 +18,9 @@ class FormPage extends StatefulWidget {
 }
 
 class _FormPageState extends State<FormPage> {
-  final _formKey = GlobalKey<FormState>();
-
-  final TextEditingController _newKeyController =
-      TextEditingController(text: '');
+  final _newKeyController = TextEditingController(
+    text: '',
+  );
 
   void _showModal() {
     showModalBottomSheet(
@@ -35,7 +38,7 @@ class _FormPageState extends State<FormPage> {
                 ),
                 validator: (String? newKeyValue) {
                   if (newKeyValue == null) {
-                    return "Key cannot be null";
+                    return AppLocalizations.of(context)!.key_not_null;
                   }
                   return null;
                 },
@@ -66,7 +69,14 @@ class _FormPageState extends State<FormPage> {
           var localeEntries = localizedData.entries.toList();
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Localization Editor'),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  context.read<ProjectBloc>().add(UserResetEvent());
+                  GoRouter.of(context).go(getRoutingKey(ManipulatorHomePage));
+                },
+              ),
+              title: const Text(APP_NAME),
             ),
             body: ListView.builder(
               itemCount: localeEntries.length,
@@ -74,44 +84,55 @@ class _FormPageState extends State<FormPage> {
                 var recordKey = localeEntries[recordIndex].key;
                 var recordValues =
                     localeEntries[recordIndex].value.entries.toList();
+
+                const labelWidth = 200.0;
+                const height = 50.0;
+                const trashIconWidth = 50.0;
+
+                var width = MediaQuery.of(context).size.width;
+                var numOfLocales = state.data.supportedLocales.length;
+                var inputRowWidth =
+                    width - labelWidth - numOfLocales * 32 - trashIconWidth;
+                var sizedFieldWidth = inputRowWidth / numOfLocales;
+
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 250,
-                      height: 50,
+                      width: labelWidth,
+                      height: height,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(recordKey),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 8,
+                              right: 8,
+                            ),
+                            child: Text(recordKey),
+                          ),
                         ],
                       ),
                     ),
                     SizedBox(
-                      width: 1080,
-                      height: 50,
+                      width: inputRowWidth,
+                      height: height,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: recordValues.length,
                         itemBuilder: (context, rIndex) => Padding(
                           padding: const EdgeInsets.all(16),
                           child: SizedBox(
-                            width: 300,
-                            height: 50,
+                            width: sizedFieldWidth,
+                            height: height,
                             child: TextFormField(
-                              enabled: recordKey != '@@locale',
+                              enabled: recordKey != LOCALE_KEY,
                               initialValue: recordValues[rIndex].value,
                               decoration: const InputDecoration(
                                 hintText: "Enter text",
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter some text';
-                                }
-                                return null;
-                              },
                               onChanged: (value) {
                                 setState(
                                   () {
@@ -132,17 +153,41 @@ class _FormPageState extends State<FormPage> {
                       ),
                     ),
                     SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: CupertinoButton(
-                        onPressed: () {
-                          context.read<ProjectBloc>().add(
-                                UserDeletedKeyEvent(recordKey),
-                              );
-                        },
-                        child: const Icon(
-                          Icons.delete,
-                          color: Colors.red,
+                      width: trashIconWidth,
+                      height: height,
+                      child: Center(
+                        child: CupertinoButton(
+                          onPressed: () {
+                            if (recordKey != LOCALE_KEY) {
+                              context.read<ProjectBloc>().add(
+                                    UserDeletedKeyEvent(recordKey),
+                                  );
+                              return;
+                            }
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(AppLocalizations.of(context)!
+                                      .figma_api_key),
+                                  content: Text(AppLocalizations.of(context)!
+                                      .keyword_not_deleted_desc),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
                         ),
                       ),
                     )
@@ -154,13 +199,13 @@ class _FormPageState extends State<FormPage> {
               onPressed: () {
                 _showModal();
               },
-              tooltip: 'Add Localization String',
+              tooltip: AppLocalizations.of(context)!.add_key,
               child: const Icon(Icons.add),
             ),
           );
         }
-        return const Center(
-          child: Text('No data here'),
+        return Center(
+          child: Text(AppLocalizations.of(context)!.no_data_here),
         );
       },
     );

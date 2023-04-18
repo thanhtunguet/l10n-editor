@@ -1,0 +1,16 @@
+{
+  "@@locale": "vi",
+  "action_save": "Lưu",
+  "add_key": "Thêm key mới",
+  "home_guide_text": "Mở project Flutter hoặc React để chỉnh sửa",
+  "no_data_here": "Không có dữ liệu",
+  "action_open": "Mở thư mục",
+  "key_not_null": "Key không được để trống",
+  "action_ok": "OK",
+  "keyword_not_deleted": "Không thể xóa Keyword",
+  "keyword_not_deleted_desc": "Đây là keyword của file. Không xóa được!",
+  "enter_figma_api_key": "Nhập API Key Figma:",
+  "figma_api_key": "Api key:",
+  "figma_config_page": "Figma Config",
+  "greeting_text": ""
+}

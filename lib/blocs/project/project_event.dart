@@ -22,3 +22,5 @@ class UserDeletedKeyEvent extends ProjectEvent {
 }
 
 class UserTriggerSaveEvent extends ProjectEvent {}
+
+class UserResetEvent extends ProjectEvent {}

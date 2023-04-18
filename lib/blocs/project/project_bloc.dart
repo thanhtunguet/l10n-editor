@@ -8,7 +8,6 @@ import 'package:l10n_manipulator/models/app_locale.dart';
 import 'package:l10n_manipulator/models/localization_data.dart';
 
 part 'project_event.dart';
-
 part 'project_state.dart';
 
 class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
@@ -17,6 +16,14 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     on<UserAddedNewKeyEvent>(_onUserAddedNewKey);
     on<UserDeletedKeyEvent>(_onUserDeletedKey);
     on<UserTriggerSaveEvent>(_onUserTriggerSave);
+    on<UserResetEvent>(_onUserReset);
+  }
+
+  _onUserReset(
+    UserResetEvent event,
+    Emitter<ProjectState> emit,
+  ) {
+    emit(ProjectState(''));
   }
 
   _onUserTriggerSave(
