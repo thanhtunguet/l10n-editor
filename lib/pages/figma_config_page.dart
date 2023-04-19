@@ -1,71 +1,145 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:l10n_manipulator/blocs/figma/project_bloc.dart';
+import 'package:l10n_manipulator/config/consts.dart';
+import 'package:l10n_manipulator/config/project_type.dart';
 import 'package:l10n_manipulator/manipulator_app.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
 @reflector
-@UsePageRoute('/figma')
+@UsePageRoute('/')
 class FigmaConfigPage extends StatefulWidget {
-  const FigmaConfigPage({super.key});
+  const FigmaConfigPage({Key? key}) : super(key: key);
 
   @override
   State<FigmaConfigPage> createState() => _FigmaConfigPageState();
 }
 
 class _FigmaConfigPageState extends State<FigmaConfigPage> {
-  // Define a TextEditingController to retrieve the value of the text field.
-  final apiKeyController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  _onSaveApiKey() {
+  final _apiKeyController = TextEditingController();
+  final _fileKeyController = TextEditingController();
 
+  ProjectType _projectType = ProjectType.flutter;
+
+  @override
+  void initState() {
+    super.initState();
+    var bloc = context.read<ProjectBloc>();
+    var state = bloc.state;
+    _apiKeyController.text = state.figma!.apiKey;
+    _fileKeyController.text = state.figma!.fileKey;
+    _projectType = ProjectTypeExtension.fromKey(state.figma!.projectType);
   }
 
-  String? _validateApiKey(String? apiKey) {
-    if (apiKey == null) {
-      // return AppLocalizations.of(context)
-      return 'API key can not be null';
+  @override
+  void dispose() {
+    _apiKeyController.dispose();
+    _fileKeyController.dispose();
+    super.dispose();
+  }
+
+  _onSubmit() {
+    if (_formKey.currentState!.validate()) {
+      // _formKey.currentState!.save();
+      context.read<ProjectBloc>().add(UserSetupEvent(
+            apiKey: _apiKeyController.text,
+            projectType: _projectType,
+            fileKey: _fileKeyController.text,
+          ));
+      GoRouter.of(context).pop();
+    }
+  }
+
+  String? _validateFileKey(value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter Figma File Key';
+    }
+    return null;
+  }
+
+  String? _validateApiKey(value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter Figma API Key';
     }
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.figma_config_page),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.enter_figma_api_key,
-              style: const TextStyle(fontSize: 18.0),
-            ),
-            const SizedBox(height: 8.0),
-            TextFormField(
-              controller: apiKeyController,
-              validator: _validateApiKey,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                hintText: AppLocalizations.of(context)!.figma_api_key,
+    return BlocBuilder<ProjectBloc, ProjectState>(
+      builder: (BuildContext context, ProjectState state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text(APP_NAME),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextFormField(
+                    controller: _apiKeyController,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.figma_api_key,
+                    ),
+                    validator: _validateApiKey,
+                  ),
+                  TextFormField(
+                    controller: _fileKeyController,
+                    decoration: const InputDecoration(
+                      labelText: 'Figma File Key',
+                    ),
+                    validator: _validateFileKey,
+                  ),
+                  const SizedBox(height: 16.0),
+                  const Text('Project Type'),
+                  Row(
+                    children: <Widget>[
+                      Radio<String>(
+                        value: 'flutter',
+                        groupValue:
+                            ProjectTypeExtension.projectKey(_projectType),
+                        onChanged: (value) {
+                          setState(() {
+                            _projectType = ProjectTypeExtension.fromKey(value!);
+                          });
+                        },
+                      ),
+                      Text(AppLocalizations.of(context)!.project_flutter),
+                      const SizedBox(width: 16.0),
+                      Radio<String>(
+                        value: 'react',
+                        groupValue:
+                            ProjectTypeExtension.projectKey(_projectType),
+                        onChanged: (value) {
+                          setState(() {
+                            _projectType = ProjectTypeExtension.fromKey(value!);
+                          });
+                        },
+                      ),
+                      Text(AppLocalizations.of(context)!.project_react),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: _onSubmit,
+                    child: Text(AppLocalizations.of(context)!.action_save),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _onSaveApiKey,
-              child: Text(AppLocalizations.of(context)!.action_save),
-            ),
-          ],
-        ),
-      ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.folder_open),
+            onPressed: () {},
+          ),
+        );
+      },
     );
-  }
-
-  @override
-  void dispose() {
-    // Dispose the TextEditingController to avoid memory leaks.
-    apiKeyController.dispose();
-    super.dispose();
   }
 }

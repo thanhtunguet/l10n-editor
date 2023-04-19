@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:l10n_manipulator/blocs/figma/figma_bloc.dart';
-import 'package:l10n_manipulator/blocs/project/project_bloc.dart';
+import 'package:l10n_manipulator/blocs/figma/project_bloc.dart';
+import 'package:l10n_manipulator/blocs/project/editor_bloc.dart';
 import 'package:l10n_manipulator/config/consts.dart';
+import 'package:l10n_manipulator/main.dart';
+import 'package:l10n_manipulator/pages/editor_form_page.dart';
 import 'package:l10n_manipulator/pages/figma_config_page.dart';
-import 'package:l10n_manipulator/pages/form_page.dart';
-import 'package:l10n_manipulator/pages/manipulator_home_page.dart';
+import 'package:l10n_manipulator/pages/figma_files_page.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
 import 'manipulator_app.dart';
@@ -17,18 +18,19 @@ class ManipulatorApp extends StatelessWidget {
   ManipulatorApp({super.key});
 
   final routerConfig = GoRouter(
+    initialLocation: getRoutingKey(FigmaConfigPage),
     routes: [
       GoRoute(
-        path: getRoutingKey(FormPage),
-        builder: (context, state) => const FormPage(),
+        path: getRoutingKey(FigmaFilesPage),
+        builder: (context, state) => const FigmaFilesPage(),
+      ),
+      GoRoute(
+        path: getRoutingKey(EditorFormPage),
+        builder: (context, state) => const EditorFormPage(),
       ),
       GoRoute(
         path: getRoutingKey(FigmaConfigPage),
         builder: (context, state) => const FigmaConfigPage(),
-      ),
-      GoRoute(
-        path: getRoutingKey(ManipulatorHomePage),
-        builder: (context, state) => const ManipulatorHomePage(),
       ),
     ],
   );
@@ -38,8 +40,9 @@ class ManipulatorApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<ProjectBloc>(create: (context) => ProjectBloc()),
-        BlocProvider<FigmaBloc>(create: (context) => FigmaBloc()),
+        BlocProvider<EditorBloc>(create: (context) => getIt.get<EditorBloc>()),
+        BlocProvider<ProjectBloc>(
+            create: (context) => getIt.get<ProjectBloc>()),
       ],
       child: MaterialApp.router(
         title: APP_NAME,

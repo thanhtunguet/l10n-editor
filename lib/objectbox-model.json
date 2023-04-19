@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:2380320027712340425",
-      "lastPropertyId": "2:634110175491158758",
+      "lastPropertyId": "4:7898316204168263736",
       "name": "Figma",
       "properties": [
         {
@@ -17,6 +17,16 @@
         {
           "id": "2:634110175491158758",
           "name": "apiKey",
+          "type": 9
+        },
+        {
+          "id": "3:7733738361781578687",
+          "name": "fileKey",
+          "type": 9
+        },
+        {
+          "id": "4:7898316204168263736",
+          "name": "projectType",
           "type": 9
         }
       ],

@@ -8,4 +8,13 @@ class Figma {
   int id = 0;
 
   String apiKey = '';
+
+  String fileKey = '';
+
+  String projectType = '';
+
+  @override
+  String toString() {
+    return "Figma#$hashCode: projectType=$projectType, apiKey=$apiKey, fileKey=$fileKey";
+  }
 }

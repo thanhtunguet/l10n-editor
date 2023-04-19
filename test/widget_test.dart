@@ -6,11 +6,14 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:l10n_manipulator/blocs/project/project_bloc.dart';
+import 'package:l10n_manipulator/blocs/project/editor_bloc.dart';
+import 'package:l10n_manipulator/config/project_type.dart';
 
 void main() {
   test('locale', () {
-    var projectState = ProjectState('/Users/tungpt/Development/sales_cloud');
-    ProjectBloc.loadProjectData(projectState);
+    var projectState = EditorState(
+      path: '/Users/tungpt/Development/sales_cloud',
+      projectType: ProjectType.flutter,
+    );
   });
 }

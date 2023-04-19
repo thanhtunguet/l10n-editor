@@ -9,8 +9,11 @@
   "action_ok": "OK",
   "keyword_not_deleted": "Không thể xóa Keyword",
   "keyword_not_deleted_desc": "Đây là keyword của file. Không xóa được!",
-  "enter_figma_api_key": "Nhập API Key Figma:",
-  "figma_api_key": "Api key:",
+  "enter_figma_api_key": "Nhập API Key Figma",
+  "figma_api_key": "Api key",
   "figma_config_page": "Figma Config",
-  "greeting_text": ""
+  "project_flutter": "Flutter",
+  "project_react": "React",
+  "project_not_selected": "Bạn chưa chọn Project",
+  "project_not_selected_desc": ""
 }

@@ -1,15 +1,11 @@
-part of 'project_bloc.dart';
+part of 'editor_bloc.dart';
 
-class ProjectState {
+class EditorState {
   final String path;
 
   final ProjectType projectType;
 
   final LocalizationData? localizationData;
-
-  LocalizationData get data {
-    return localizationData!;
-  }
 
   bool get hasData {
     return localizationData != null;
@@ -27,23 +23,12 @@ class ProjectState {
     return first!.length; // Except '@@locale'
   }
 
-  ProjectState forEach(void Function(String, String) eachFunction) {
-    if (localizationData == null) {
-      return this;
-    }
-    if (localizationData!.localizedData.isEmpty) {
-      return this;
-    }
-    var firstKey = localizationData!.localizedData.keys.first;
-    var first = localizationData!.localizedData[firstKey];
-    first?.forEach((key, value) {
-      eachFunction(key, value);
-    });
-    return this;
-  }
-
   String locale(String filename) {
-    RegExp regExp = RegExp(r'_([a-z]{2})\.arb$');
+    if (projectType == ProjectType.flutter) {
+      RegExp regExp = RegExp(r'_([a-z]{2})\.arb$');
+      return regExp.firstMatch(filename)?.group(1) ?? '';
+    }
+    RegExp regExp = RegExp(r'([a-z]{2})\.json$');
     return regExp.firstMatch(filename)?.group(1) ?? '';
   }
 
@@ -61,13 +46,13 @@ class ProjectState {
     return "$path/src/i18n";
   }
 
-  ProjectState(
-    this.path, {
-    this.projectType = ProjectType.flutter,
+  EditorState({
+    required this.path,
+    required this.projectType,
     this.localizationData,
   });
 
-  ProjectState addKey(String key) {
+  EditorState addKey(String key) {
     if (localizationData != null) {
       if (!localizationData!.localizedData.containsKey(key)) {
         localizationData!.localizedData[key] = {};
@@ -76,43 +61,55 @@ class ProjectState {
         }
       }
     }
-    return ProjectState(
-      path,
+    return EditorState(
+      path: path,
       projectType: projectType,
       localizationData: localizationData,
     );
   }
 
-  ProjectState deleteKey(String key) {
+  EditorState deleteKey(String key) {
     if (localizationData != null) {
       if (localizationData!.localizedData.containsKey(key)) {
         localizationData!.localizedData.removeWhere((k, _) => k == key);
       }
     }
-    return ProjectState(
-      path,
+    return EditorState(
+      path: path,
       projectType: projectType,
       localizationData: localizationData,
     );
   }
 
-  ProjectState withPath(String path) {
-    return ProjectState(path);
-  }
-
-  ProjectState withData(LocalizationData data) {
-    return ProjectState(
-      path,
+  EditorState withPath(String path, ProjectType projectType) {
+    return EditorState(
+      path: path,
       projectType: projectType,
-      localizationData: data,
+      localizationData: localizationData,
     );
   }
 
-  ProjectState flutter() {
-    return ProjectState(path, projectType: ProjectType.flutter);
+  EditorState withData(LocalizationData localizationData) {
+    return EditorState(
+      path: path,
+      projectType: projectType,
+      localizationData: localizationData,
+    );
   }
 
-  ProjectState react() {
-    return ProjectState(path, projectType: ProjectType.react);
+  EditorState flutter() {
+    return EditorState(
+      path: path,
+      projectType: ProjectType.flutter,
+      localizationData: localizationData,
+    );
+  }
+
+  EditorState react() {
+    return EditorState(
+      path: path,
+      projectType: ProjectType.react,
+      localizationData: localizationData,
+    );
   }
 }

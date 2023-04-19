@@ -11,17 +11,28 @@ class FigmaRepository extends HttpRepository {
     _apiKey = apiKey;
   }
 
+  get headers {
+    return {
+      'X-FIGMA-TOKEN': _apiKey,
+    };
+  }
+
   FigmaRepository() : super() {
     baseUrl = 'https://api.figma.com/v1';
   }
 
-  // Future<List<FigmaFile>> files() {
-  //   Options options = Options();
-  //   options.headers = {
-  //     'X-Figma-Token': _apiKey,
-  //   };
-  //   // Response<List<FigmaFile>> response=await get('/files', options: options);
-  //   // return response.body<List<FigmaFile>();
-  //
-  // }
+  Future<List<FigmaFile>> files() async {
+    Options options = Options();
+    options.headers = headers;
+    Response<dynamic> response = await get(
+      '/files',
+      options: options,
+      queryParameters: {
+        'archived': false,
+        'drafts': true,
+      },
+    );
+    final files = response.data['files'];
+    return files.map((e) => FigmaFile.fromJson(e)).toList();
+  }
 }
