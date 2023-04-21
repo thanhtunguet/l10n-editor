@@ -45,3 +45,5 @@ app.*.map.json
 lib/objectbox.g.dart
 
 lib/main.*.dart
+.env
+test/main.*.dart

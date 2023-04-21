@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:l10n_manipulator/blocs/figma/project_bloc.dart';
-import 'package:l10n_manipulator/blocs/project/editor_bloc.dart';
+import 'package:l10n_manipulator/blocs/editor/editor_bloc.dart';
+import 'package:l10n_manipulator/blocs/project/project_bloc.dart';
 import 'package:l10n_manipulator/config/consts.dart';
 import 'package:l10n_manipulator/main.dart';
+import 'package:l10n_manipulator/pages/azure_project_page.dart';
 import 'package:l10n_manipulator/pages/editor_form_page.dart';
-import 'package:l10n_manipulator/pages/figma_config_page.dart';
-import 'package:l10n_manipulator/pages/figma_files_page.dart';
+import 'package:l10n_manipulator/pages/project_config_page.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
 import 'manipulator_app.dart';
@@ -21,8 +21,8 @@ class ManipulatorApp extends StatelessWidget {
     initialLocation: getRoutingKey(FigmaConfigPage),
     routes: [
       GoRoute(
-        path: getRoutingKey(FigmaFilesPage),
-        builder: (context, state) => const FigmaFilesPage(),
+        path: getRoutingKey(AzureProjectPage),
+        builder: (context, state) => const AzureProjectPage(),
       ),
       GoRoute(
         path: getRoutingKey(EditorFormPage),

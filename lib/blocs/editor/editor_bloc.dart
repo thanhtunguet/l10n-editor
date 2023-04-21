@@ -2,11 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:l10n_manipulator/blocs/project/project_bloc.dart';
+import 'package:l10n_manipulator/config/project_location.dart';
 import 'package:l10n_manipulator/config/project_type.dart';
+import 'package:l10n_manipulator/main.dart';
 import 'package:l10n_manipulator/models/app_locale.dart';
 import 'package:l10n_manipulator/models/localization_data.dart';
+import 'package:l10n_manipulator/repositories/azure_devops_repository.dart';
 
 part 'editor_event.dart';
 
@@ -27,6 +32,15 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
     on<UserDeletedKeyEvent>(_onUserDeletedKey);
     on<UserTriggerSaveEvent>(_onUserTriggerSave);
     on<UserResetEvent>(_onUserReset);
+    on<UserSelectOnlineProjectEvent>(_onUserSelectOnlineProject);
+  }
+
+  _onUserSelectOnlineProject(
+    UserSelectOnlineProjectEvent event,
+    Emitter<EditorState> emit,
+  ) {
+    var localizationData = _loadOnlineProject(event.fileContents);
+    emit(state.toAzureDevops(localizationData));
   }
 
   _onUserReset(
@@ -46,19 +60,50 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
     UserTriggerSaveEvent event,
     Emitter<EditorState> emit,
   ) async {
-    var supportedLocales = state.localizationData!.supportedLocales;
-    var localizationData = state.localizationData!.localizedData;
+    if (state.projectLocation == ProjectLocation.azureDevops ||
+        event is UserTriggerOnlineSaveEvent) {
+      var projectState = getIt.get<ProjectBloc>().state;
+      var devopsRepository = AzureDevopsRepository();
+      var repoId = (event as UserTriggerOnlineSaveEvent).repositoryId;
+      var token = projectState.projectConfig!.azureDevopsToken!;
+      var latestCommitId = await devopsRepository.getLatestCommitId(
+        token,
+        repoId,
+      );
+      var supportedLocales = state.localizationData!.supportedLocales;
+      var encoder = JsonEncoder.withIndent('  ');
+      Map<String, String> fileContents = {};
+      for (var supportedLocale in supportedLocales) {
+        var localeString = {};
+        for (var entry in state.localizationData!.localizedData.entries) {
+          localeString[entry.key] = entry.value[supportedLocale.locale];
+        }
+        fileContents["/lib/l10n/intl_${supportedLocale.locale}.arb"] =
+            encoder.convert(localeString);
+      }
+      try {
+        var result = await devopsRepository.updateFiles(
+            token, repoId, latestCommitId, fileContents);
+      } catch (e) {
+        print(e);
+      }
+      return;
+    }
+    if (state.projectLocation == ProjectLocation.local) {
+      var supportedLocales = state.localizationData!.supportedLocales;
+      var localizationData = state.localizationData!.localizedData;
 
-    for (var locale in supportedLocales) {
-      var result = {};
-      var localeFile = state.localeFile(locale);
-      localizationData.forEach((key, value) {
-        result[key] = value[locale.locale];
-      });
-      var encoder = const JsonEncoder.withIndent('  ');
-      var text = encoder.convert(result);
-      localeFile.writeAsStringSync(text, mode: FileMode.write);
-      await _runFlutterGenL10n();
+      for (var locale in supportedLocales) {
+        var result = {};
+        var localeFile = state.localeFile(locale);
+        localizationData.forEach((key, value) {
+          result[key] = value[locale.locale];
+        });
+        var encoder = const JsonEncoder.withIndent('  ');
+        var text = encoder.convert(result);
+        localeFile.writeAsStringSync(text, mode: FileMode.write);
+        await _runFlutterGenL10n();
+      }
     }
   }
 
@@ -129,6 +174,24 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
           }
         },
       );
+    }
+    return LocalizationData(supportedLocales, localizationData);
+  }
+
+  static LocalizationData _loadOnlineProject(Map<String, String> fileContents) {
+    var supportedLocales = <AppLocale>[];
+    Map<String, Map<String, dynamic>> localizationData = {};
+    var projectState = EditorState(path: '', projectType: ProjectType.flutter);
+    for (var entry in fileContents.entries) {
+      var locale = AppLocale(projectState.locale(entry.key));
+      supportedLocales.add(locale);
+      var localeContents = jsonDecode(entry.value);
+      localeContents.forEach((key, value) {
+        if (!localizationData.containsKey(key)) {
+          localizationData[key] = {};
+        }
+        localizationData[key]![locale.locale] = value;
+      });
     }
     return LocalizationData(supportedLocales, localizationData);
   }

@@ -1,11 +1,13 @@
 part of 'editor_bloc.dart';
 
-class EditorState {
+class EditorState extends Equatable {
   final String path;
 
   final ProjectType projectType;
 
   final LocalizationData? localizationData;
+
+  ProjectLocation projectLocation = ProjectLocation.local;
 
   bool get hasData {
     return localizationData != null;
@@ -50,6 +52,7 @@ class EditorState {
     required this.path,
     required this.projectType,
     this.localizationData,
+    this.projectLocation = ProjectLocation.local,
   });
 
   EditorState addKey(String key) {
@@ -94,6 +97,7 @@ class EditorState {
       path: path,
       projectType: projectType,
       localizationData: localizationData,
+      projectLocation: projectLocation,
     );
   }
 
@@ -102,6 +106,7 @@ class EditorState {
       path: path,
       projectType: ProjectType.flutter,
       localizationData: localizationData,
+      projectLocation: projectLocation,
     );
   }
 
@@ -110,6 +115,33 @@ class EditorState {
       path: path,
       projectType: ProjectType.react,
       localizationData: localizationData,
+      projectLocation: projectLocation,
     );
   }
+
+  EditorState toAzureDevops(LocalizationData localizationData) {
+    return EditorState(
+      path: path,
+      projectType: projectType,
+      localizationData: localizationData,
+      projectLocation: ProjectLocation.azureDevops,
+    );
+  }
+
+  EditorState toLocal() {
+    return EditorState(
+      path: path,
+      projectType: projectType,
+      localizationData: localizationData,
+      projectLocation: ProjectLocation.local,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        path,
+        projectType,
+        localizationData,
+        projectLocation,
+      ];
 }

@@ -14,6 +14,12 @@ class UserSelectedProjectEvent extends EditorEvent {
   }) : super();
 }
 
+class UserSelectOnlineProjectEvent extends EditorEvent {
+  final Map<String, String> fileContents;
+
+  UserSelectOnlineProjectEvent(this.fileContents) : super();
+}
+
 class UserAddedNewKeyEvent extends EditorEvent {
   final String key;
 
@@ -27,5 +33,11 @@ class UserDeletedKeyEvent extends EditorEvent {
 }
 
 class UserTriggerSaveEvent extends EditorEvent {}
+
+class UserTriggerOnlineSaveEvent extends UserTriggerSaveEvent {
+  final String repositoryId;
+
+  UserTriggerOnlineSaveEvent(this.repositoryId) : super();
+}
 
 class UserResetEvent extends EditorEvent {}

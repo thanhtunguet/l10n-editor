@@ -4,35 +4,6 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:2380320027712340425",
-      "lastPropertyId": "4:7898316204168263736",
-      "name": "Figma",
-      "properties": [
-        {
-          "id": "1:8268988335209308660",
-          "name": "id",
-          "type": 6,
-          "flags": 129
-        },
-        {
-          "id": "2:634110175491158758",
-          "name": "apiKey",
-          "type": 9
-        },
-        {
-          "id": "3:7733738361781578687",
-          "name": "fileKey",
-          "type": 9
-        },
-        {
-          "id": "4:7898316204168263736",
-          "name": "projectType",
-          "type": 9
-        }
-      ],
-      "relations": []
-    },
-    {
       "id": "2:2882532840637381752",
       "lastPropertyId": "3:2184486987622028848",
       "name": "Project",
@@ -55,17 +26,59 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "3:9205676450019964056",
+      "lastPropertyId": "6:7723380627632983281",
+      "name": "ProjectConfig",
+      "properties": [
+        {
+          "id": "1:3975704469008988342",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:91511551884933273",
+          "name": "figmaApiKey",
+          "type": 9
+        },
+        {
+          "id": "3:2093899868723765677",
+          "name": "fileKey",
+          "type": 9
+        },
+        {
+          "id": "5:5094761398937368845",
+          "name": "projectType",
+          "type": 9
+        },
+        {
+          "id": "6:7723380627632983281",
+          "name": "azureDevopsToken",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "2:2882532840637381752",
+  "lastEntityId": "3:9205676450019964056",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
-  "retiredEntityUids": [],
+  "retiredEntityUids": [
+    2380320027712340425
+  ],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    8268988335209308660,
+    634110175491158758,
+    7733738361781578687,
+    7898316204168263736,
+    8802292790450863443
+  ],
   "retiredRelationUids": [],
   "version": 1
 }
