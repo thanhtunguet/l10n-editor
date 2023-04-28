@@ -1,0 +1,66 @@
+{
+  "name": "l10n editor",
+  "version": "1.0.0",
+  "description": "Language editor for Flutter and React Projects",
+  "manifest_version": 3,
+  "icons": {
+    "48": "src/assets/48.png",
+    "64": "src/assets/64.png",
+    "128": "src/assets/128.png"
+  },
+  "permissions": [
+    "cookies",
+    "storage",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "https://www.figma.com/*",
+    "https://api.figma.com/v1/*",
+    "https://devops.truesight.asia:8123/*",
+    "https://truesight.asia/*"
+  ],
+  "action": {
+    "default_popup": "./src/modules/popup/popup.html"
+  },
+  "background": {
+    "service_worker": "./src/background.tsx"
+  },
+  "options_ui": {
+    "page": "./src/modules/options/options.html",
+    "open_in_tab": true
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/assets/*.png",
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.html"
+      ],
+      "matches": [
+      ]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://truesight.asia/DefaultCollection/*",
+        "https://devops.truesight.asia:8123/DefaultCollection/*"
+      ],
+      "js": [
+        "./src/modules/devops/azure-devops.tsx"
+      ],
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "https://www.figma.com/file/*",
+        "https://api.figma.com/v1/*"
+      ],
+      "js": [
+        "./src/modules/figma/figma.tsx"
+      ],
+      "all_frames": true
+    }
+  ]
+}
