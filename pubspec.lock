@@ -901,10 +901,11 @@ packages:
   truesight_flutter:
     dependency: "direct main"
     description:
-      path: "../thanhtunguet/truesight_flutter"
-      relative: true
-    source: path
-    version: "0.0.6"
+      name: truesight_flutter
+      sha256: cf69604ab8fed5186b38778355908e367da853d4be0831be063aefdb9310dde7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.8"
   typed_data:
     dependency: transitive
     description:
