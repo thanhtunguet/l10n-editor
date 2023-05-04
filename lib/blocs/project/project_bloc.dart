@@ -2,10 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:l10n_manipulator/config/project_type.dart';
-import 'package:l10n_manipulator/database/database.dart';
-import 'package:l10n_manipulator/main.dart';
-import 'package:l10n_manipulator/repositories/database_repository.dart';
+import 'package:l10n_editor/config/project_type.dart';
+import 'package:l10n_editor/database/database.dart';
+import 'package:l10n_editor/main.dart';
+import 'package:l10n_editor/repositories/database_repository.dart';
 
 part 'project_event.dart';
 part 'project_state.dart';

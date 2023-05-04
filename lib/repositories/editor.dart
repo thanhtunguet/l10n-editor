@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:l10n_manipulator/config/consts.dart';
-import 'package:l10n_manipulator/manipulator_app.dart';
-import 'package:l10n_manipulator/models/app_locale.dart';
+import 'package:l10n_editor/config/consts.dart';
+import 'package:l10n_editor/l10n_editor_app.dart';
 
 class Editor extends StatefulWidget {
-  List<AppLocale> supportedLocales;
+  List<Locale> supportedLocales;
 
   Map<String, Map<String, dynamic>> localizedData;
 
@@ -94,7 +93,7 @@ class _EditorState extends State<Editor> {
                             child: TextFormField(
                               enabled: recordKey != LOCALE_KEY,
                               initialValue: localizedData[recordKey]
-                                  ?[locale.locale],
+                                  ?[locale.languageCode],
                               decoration: const InputDecoration(
                                 hintText: "Enter text",
                               ),
@@ -104,8 +103,8 @@ class _EditorState extends State<Editor> {
                                     if (!localizedData.containsKey(recordKey)) {
                                       localizedData[recordKey] = {};
                                     }
-                                    localizedData[recordKey]![locale.locale] =
-                                        value;
+                                    localizedData[recordKey]![
+                                        locale.languageCode] = value;
                                   },
                                 );
                               },

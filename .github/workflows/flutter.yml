@@ -1,6 +1,10 @@
 name: Flutter Windows and macOS Build
 on: push
 
+env:
+  SENTRY_DSN: "{{ secrets.SENTRY_DSN }}"
+  DEVOPS_URL: "{{ secrets.DEVOPS_URL }}"
+
 jobs:
   build:
     runs-on: windows-latest
@@ -11,22 +15,20 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
         with:
-          channel: 'stable'
-      - name: Get dependencies
+          channel: "stable"
+      - name: Build for Windows
         run: |
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
-          touch .env
-      - name: Build for Windows
-        run: |
+          printenv | grep SENTRY_DSN > .env
+          printenv | grep DEVOPS_URL >> .env
           flutter build windows
-          zip l10n-editor-windows.zip -r build/windows/
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: l10n-editor-windows.zip
-          path: l10n-editor-windows.zip
+          name: windows-build
+          path: build/windows/
 
       - name: Create GitHub release
         id: create_release
@@ -45,8 +47,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: l10n-editor-windows.zip
-          asset_name: l10n-editor-windows.zip
+          asset_path: build/windows/
+          asset_name: windows-build
           asset_content_type: application/zip
 
   build-macos:
@@ -58,16 +60,14 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
         with:
-          channel: 'stable'
-      - name: Get dependencies
+          channel: "stable"
+      - name: Build for macOS
         run: |
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
-          touch .env
-      - name: Build for macOS
-        run: |
+          printenv | grep SENTRY_DSN > .env
+          printenv | grep DEVOPS_URL >> .env
           flutter build macos
-          zip l10n-editor-macos.zip -r build/macos/
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -90,6 +90,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: l10n-editor-macos.zip
-          asset_name: l10n-editor-macos.zip
+          asset_path: build/macos/
+          asset_name: macos-build
           asset_content_type: application/zip

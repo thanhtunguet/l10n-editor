@@ -48,4 +48,6 @@ lib/objectbox.g.dart
 /lib/main.reflectable.dart
 /lib/main.config.dart
 /lib/main.config.reflectable.dart
-/test/main.*.dart
+/test/main.config.dart
+/test/main.reflectable.dart
+/test/main.config.reflectable.dart

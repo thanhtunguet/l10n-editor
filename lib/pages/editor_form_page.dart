@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:l10n_manipulator/blocs/editor/editor_bloc.dart';
-import 'package:l10n_manipulator/config/consts.dart';
-import 'package:l10n_manipulator/manipulator_app.dart';
-import 'package:l10n_manipulator/repositories/editor.dart';
+import 'package:l10n_editor/blocs/editor/editor_bloc.dart';
+import 'package:l10n_editor/config/consts.dart';
+import 'package:l10n_editor/l10n_editor_app.dart';
+import 'package:l10n_editor/repositories/editor.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
 @reflector

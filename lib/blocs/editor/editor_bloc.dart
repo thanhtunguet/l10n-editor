@@ -4,17 +4,16 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:l10n_manipulator/blocs/project/project_bloc.dart';
-import 'package:l10n_manipulator/config/project_location.dart';
-import 'package:l10n_manipulator/config/project_type.dart';
-import 'package:l10n_manipulator/main.dart';
-import 'package:l10n_manipulator/models/app_locale.dart';
-import 'package:l10n_manipulator/models/localization_data.dart';
-import 'package:l10n_manipulator/repositories/azure_devops_repository.dart';
+import 'package:l10n_editor/blocs/project/project_bloc.dart';
+import 'package:l10n_editor/config/project_location.dart';
+import 'package:l10n_editor/config/project_type.dart';
+import 'package:l10n_editor/main.dart';
+import 'package:l10n_editor/models/localization_data.dart';
+import 'package:l10n_editor/repositories/azure_devops_repository.dart';
 
 part 'editor_event.dart';
-
 part 'editor_state.dart';
 
 @singleton
@@ -71,21 +70,23 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
         repoId,
       );
       var supportedLocales = state.localizationData!.supportedLocales;
-      var encoder = JsonEncoder.withIndent('  ');
+      var encoder = const JsonEncoder.withIndent('  ');
       Map<String, String> fileContents = {};
       for (var supportedLocale in supportedLocales) {
         var localeString = {};
         for (var entry in state.localizationData!.localizedData.entries) {
-          localeString[entry.key] = entry.value[supportedLocale.locale];
+          localeString[entry.key] = entry.value[supportedLocale.languageCode];
         }
-        fileContents["/lib/l10n/intl_${supportedLocale.locale}.arb"] =
+        fileContents["/lib/l10n/intl_${supportedLocale.languageCode}.arb"] =
             encoder.convert(localeString);
       }
       try {
         var result = await devopsRepository.updateFiles(
             token, repoId, latestCommitId, fileContents);
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
       return;
     }
@@ -97,7 +98,7 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
         var result = {};
         var localeFile = state.localeFile(locale);
         localizationData.forEach((key, value) {
-          result[key] = value[locale.locale];
+          result[key] = value[locale.languageCode];
         });
         var encoder = const JsonEncoder.withIndent('  ');
         var text = encoder.convert(result);
@@ -146,7 +147,7 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
   }
 
   static LocalizationData _loadProjectData(EditorState projectState) {
-    var supportedLocales = <AppLocale>[];
+    var supportedLocales = <Locale>[];
     Map<String, Map<String, dynamic>> localizationData = {};
 
     var directory = Directory(projectState.l10nPath);
@@ -156,7 +157,7 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
           if (element is File) {
             var localeCode = projectState.locale(element.path);
             if (localeCode != '') {
-              var appLocale = AppLocale(localeCode);
+              var appLocale = Locale(localeCode);
               supportedLocales.add(appLocale);
               if (kDebugMode) {
                 print("Locale: $localeCode");
@@ -179,18 +180,19 @@ class EditorBloc extends Bloc<EditorEvent, EditorState> {
   }
 
   static LocalizationData _loadOnlineProject(Map<String, String> fileContents) {
-    var supportedLocales = <AppLocale>[];
+    var supportedLocales = <Locale>[];
     Map<String, Map<String, dynamic>> localizationData = {};
-    var projectState = EditorState(path: '', projectType: ProjectType.flutter);
+    var projectState =
+        const EditorState(path: '', projectType: ProjectType.flutter);
     for (var entry in fileContents.entries) {
-      var locale = AppLocale(projectState.locale(entry.key));
+      var locale = Locale(projectState.locale(entry.key));
       supportedLocales.add(locale);
       var localeContents = jsonDecode(entry.value);
       localeContents.forEach((key, value) {
         if (!localizationData.containsKey(key)) {
           localizationData[key] = {};
         }
-        localizationData[key]![locale.locale] = value;
+        localizationData[key]![locale.languageCode] = value;
       });
     }
     return LocalizationData(supportedLocales, localizationData);

@@ -1,21 +1,17 @@
-import 'package:l10n_manipulator/models/app_locale.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
-class LocalizationData {
-  List<AppLocale> _supportedLocales;
+class LocalizationData extends Equatable {
+  final List<Locale> supportedLocales;
 
-  List<AppLocale> get supportedLocales {
-    return _supportedLocales;
-  }
-
-  Map<String, Map<String, dynamic>> _localizationData;
+  final Map<String, Map<String, dynamic>> _localizationData;
 
   Map<String, Map<String, dynamic>> get localizedData {
     return _localizationData;
   }
 
-  LocalizationData(this._supportedLocales, this._localizationData);
+  const LocalizationData(this.supportedLocales, this._localizationData);
 
-  set supportedLocales(List<AppLocale> supportedLocales) {
-    _supportedLocales = supportedLocales;
-  }
+  @override
+  List<Object?> get props => [...supportedLocales, ...localizedData.keys];
 }

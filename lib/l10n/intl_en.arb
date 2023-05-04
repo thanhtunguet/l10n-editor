@@ -10,10 +10,13 @@
   "keyword_not_deleted": "Keyword Not Removed",
   "keyword_not_deleted_desc": "File's keyword can not be removed",
   "enter_figma_api_key": "Enter Figma's API key",
-  "figma_api_key": "Api key",
-  "figma_config_page": "Figma Config",
+  "figma_api_key": "Figma API Key",
+  "figma_config_page": "Figma Configuration",
   "project_flutter": "Flutter",
   "project_react": "React",
   "project_not_selected": "You haven't chosen a project",
-  "project_not_selected_desc": ""
+  "project_not_selected_desc": "You have to choose local Project to edit",
+  "figma_api_key_desc": "Figma API Key is required",
+  "devops_access_token_desc": "Azure Devops's Access Token is required",
+  "action_open_online": "Open Online"
 }

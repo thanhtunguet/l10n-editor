@@ -7,7 +7,7 @@ class EditorState extends Equatable {
 
   final LocalizationData? localizationData;
 
-  ProjectLocation projectLocation = ProjectLocation.local;
+  final ProjectLocation projectLocation;
 
   bool get hasData {
     return localizationData != null;
@@ -34,11 +34,11 @@ class EditorState extends Equatable {
     return regExp.firstMatch(filename)?.group(1) ?? '';
   }
 
-  File localeFile(AppLocale locale) {
+  File localeFile(Locale locale) {
     if (projectType == ProjectType.flutter) {
-      return File("$path/lib/l10n/intl_${locale.locale}.arb");
+      return File("$path/lib/l10n/intl_${locale.languageCode}.arb");
     }
-    return File("$path/src/i18n/${locale.locale}.json");
+    return File("$path/src/i18n/${locale.languageCode}.json");
   }
 
   String get l10nPath {
@@ -48,7 +48,7 @@ class EditorState extends Equatable {
     return "$path/src/i18n";
   }
 
-  EditorState({
+  const EditorState({
     required this.path,
     required this.projectType,
     this.localizationData,
@@ -60,7 +60,7 @@ class EditorState extends Equatable {
       if (!localizationData!.localizedData.containsKey(key)) {
         localizationData!.localizedData[key] = {};
         for (var locale in localizationData!.supportedLocales) {
-          localizationData!.localizedData[key]![locale.locale] = '';
+          localizationData!.localizedData[key]![locale.languageCode] = '';
         }
       }
     }

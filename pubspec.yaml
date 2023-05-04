@@ -1,7 +1,7 @@
-name: l10n_manipulator
-description: Localization manipulator application
-homepage: https://github.com/thanhtunguet/l10n_editor_by_flutter
-repository: https://github.com/thanhtunguet/l10n_editor_by_flutter
+name: l10n_editor
+description: Localization editor for Flutter and React projects
+homepage: https://github.com/thanhtunguet/l10n-editor
+repository: https://github.com/thanhtunguet/l10n-editor
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.

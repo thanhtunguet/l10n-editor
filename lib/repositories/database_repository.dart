@@ -1,5 +1,5 @@
-import 'package:l10n_manipulator/database/database.dart';
-import 'package:l10n_manipulator/objectbox.g.dart';
+import 'package:l10n_editor/database/database.dart';
+import 'package:l10n_editor/objectbox.g.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
 class DatabaseRepository extends ObjectBoxRepository {

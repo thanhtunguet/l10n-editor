@@ -1,12 +1,9 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:l10n_manipulator/config/consts.dart';
-import 'package:l10n_manipulator/models/azure.dart';
-import 'package:l10n_manipulator/models/dto/azure_git_object_list_dto.dart';
-import 'package:l10n_manipulator/models/dto/azure_project_list_dto.dart';
-import 'package:l10n_manipulator/models/dto/azure_repository_list_dto.dart';
-import 'package:l10n_manipulator/models/git_object.dart';
+import 'package:l10n_editor/config/consts.dart';
+import 'package:l10n_editor/models/azure.dart';
+import 'package:l10n_editor/models/git_object.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
 class AzureDevopsRepository extends HttpRepository {
@@ -30,7 +27,17 @@ class AzureDevopsRepository extends HttpRepository {
       '/_apis/projects',
       options: headers(personalAccessToken),
     );
-    return response.body<AzureProjectListDto>().value.toList();
+    if (response.data is Map) {
+      final Map<String, dynamic> data = response.data;
+      if (data.containsKey("value")) {
+        return (data['value'] as List).map((element) {
+          final project = AzureProject();
+          project.fromJSON(element);
+          return project;
+        }).toList();
+      }
+    }
+    return [];
   }
 
   Future<List<AzureRepo>> repos(
@@ -39,7 +46,17 @@ class AzureDevopsRepository extends HttpRepository {
       "/$projectId/_apis/git/repositories",
       options: headers(personalAccessToken),
     );
-    return response.body<AzureRepositoryListDto>().value.toList();
+    if (response.data is Map) {
+      final Map<String, dynamic> data = response.data;
+      if (data.containsKey("value")) {
+        return (data['value'] as List).map((element) {
+          final repository = AzureRepo();
+          repository.fromJSON(element);
+          return repository;
+        }).toList();
+      }
+    }
+    return [];
   }
 
   Future<List<GitObject>> files(
@@ -51,7 +68,17 @@ class AzureDevopsRepository extends HttpRepository {
         'recursionLevel': 'Full',
       },
     );
-    return response.body<AzureGitObjectListDto>().value.toList();
+    if (response.data is Map) {
+      final Map<String, dynamic> data = response.data;
+      if (data.containsKey("value")) {
+        return (data['value'] as List).map((element) {
+          final gitObject = GitObject();
+          gitObject.fromJSON(element);
+          return gitObject;
+        }).toList();
+      }
+    }
+    return [];
   }
 
   Future<String> getFileContents(

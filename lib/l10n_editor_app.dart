@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:l10n_manipulator/blocs/editor/editor_bloc.dart';
-import 'package:l10n_manipulator/blocs/project/project_bloc.dart';
-import 'package:l10n_manipulator/config/consts.dart';
-import 'package:l10n_manipulator/main.dart';
-import 'package:l10n_manipulator/pages/azure_project_page.dart';
-import 'package:l10n_manipulator/pages/editor_form_page.dart';
-import 'package:l10n_manipulator/pages/project_config_page.dart';
+import 'package:l10n_editor/blocs/editor/editor_bloc.dart';
+import 'package:l10n_editor/blocs/project/project_bloc.dart';
+import 'package:l10n_editor/config/app_locale.dart';
+import 'package:l10n_editor/config/consts.dart';
+import 'package:l10n_editor/main.dart';
+import 'package:l10n_editor/pages/azure_project_page.dart';
+import 'package:l10n_editor/pages/editor_form_page.dart';
+import 'package:l10n_editor/pages/project_config_page.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
-import 'manipulator_app.dart';
+import 'l10n_editor_app.dart';
 
 export 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class ManipulatorApp extends StatelessWidget {
-  ManipulatorApp({super.key});
+class L10nEditorApp extends StatelessWidget {
+  L10nEditorApp({super.key});
 
   final routerConfig = GoRouter(
     initialLocation: getRoutingKey(FigmaConfigPage),
@@ -46,7 +47,7 @@ class ManipulatorApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         title: APP_NAME,
-        locale: const Locale('en'),
+        locale: AppLocale.vietnamese,
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         theme: ThemeData(

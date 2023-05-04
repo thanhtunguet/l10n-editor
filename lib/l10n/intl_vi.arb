@@ -10,10 +10,13 @@
   "keyword_not_deleted": "Không thể xóa Keyword",
   "keyword_not_deleted_desc": "Đây là keyword của file. Không xóa được!",
   "enter_figma_api_key": "Nhập API Key Figma",
-  "figma_api_key": "Api key",
-  "figma_config_page": "Figma Config",
+  "figma_api_key": "Figma API Key",
+  "figma_config_page": "Cấu hình Figma",
   "project_flutter": "Flutter",
   "project_react": "React",
   "project_not_selected": "Bạn chưa chọn Project",
-  "project_not_selected_desc": ""
+  "project_not_selected_desc": "Bạn cần chọn Project trong máy để chỉnh sửa",
+  "figma_api_key_desc": "Bạn cần nhập Figma API Key",
+  "devops_access_token_desc": "Bạn cần nhập Devops Token",
+  "action_open_online": "Mở Online"
 }

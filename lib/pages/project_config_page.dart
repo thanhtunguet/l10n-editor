@@ -5,16 +5,16 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:l10n_manipulator/blocs/editor/editor_bloc.dart';
-import 'package:l10n_manipulator/blocs/project/project_bloc.dart';
-import 'package:l10n_manipulator/config/consts.dart';
-import 'package:l10n_manipulator/config/project_type.dart';
-import 'package:l10n_manipulator/main.dart';
-import 'package:l10n_manipulator/manipulator_app.dart';
-import 'package:l10n_manipulator/pages/azure_project_page.dart';
-import 'package:l10n_manipulator/pages/editor_form_page.dart';
-import 'package:l10n_manipulator/repositories/figma_repository.dart';
-import 'package:l10n_manipulator/widgets/home_icon.dart';
+import 'package:l10n_editor/blocs/editor/editor_bloc.dart';
+import 'package:l10n_editor/blocs/project/project_bloc.dart';
+import 'package:l10n_editor/config/consts.dart';
+import 'package:l10n_editor/config/project_type.dart';
+import 'package:l10n_editor/l10n_editor_app.dart';
+import 'package:l10n_editor/main.dart';
+import 'package:l10n_editor/pages/azure_project_page.dart';
+import 'package:l10n_editor/pages/editor_form_page.dart';
+import 'package:l10n_editor/repositories/figma_repository.dart';
+import 'package:l10n_editor/widgets/home_icon.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
 @reflector
@@ -78,7 +78,7 @@ class _FigmaConfigPageState extends State<FigmaConfigPage> {
 
   String? _validateApiKey(value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter Figma API Key';
+      return AppLocalizations.of(context)!.enter_figma_api_key;
     }
     return null;
   }
@@ -258,7 +258,7 @@ class _FigmaConfigPageState extends State<FigmaConfigPage> {
                         onPressed: _openProject,
                       ),
                       HomeIcon(
-                        label: 'Open online',
+                        label: AppLocalizations.of(context)!.action_open_online,
                         icon: Icons.cloud,
                         onPressed: () {
                           GoRouter.of(context).push(
