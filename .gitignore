@@ -44,6 +44,8 @@ app.*.map.json
 /android/app/release
 lib/objectbox.g.dart
 
-lib/main.*.dart
 .env
-test/main.*.dart
+/lib/main.reflectable.dart
+/lib/main.config.dart
+/lib/main.config.reflectable.dart
+/test/main.*.dart

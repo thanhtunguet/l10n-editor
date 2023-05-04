@@ -4,6 +4,7 @@ on: push
 jobs:
   build:
     runs-on: windows-latest
+    permissions: write-all
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -17,15 +18,40 @@ jobs:
           flutter pub run build_runner build --delete-conflicting-outputs
           touch .env
       - name: Build for Windows
-        run: flutter build windows
+        run: |
+          flutter build windows
+          zip l10n-editor-windows.zip -r build/windows/
+
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: windows-build
-          path: build/windows/
+          name: l10n-editor-windows.zip
+          path: l10n-editor-windows.zip
+
+      - name: Create GitHub release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: Latest release version for Windows
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: l10n-editor-windows.zip
+          asset_name: l10n-editor-windows.zip
+          asset_content_type: application/zip
 
   build-macos:
     runs-on: macos-latest
+    permissions: write-all
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -39,9 +65,31 @@ jobs:
           flutter pub run build_runner build --delete-conflicting-outputs
           touch .env
       - name: Build for macOS
-        run: flutter build macos
+        run: |
+          flutter build macos
+          zip l10n-editor-macos.zip -r build/macos/
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
           name: macos-build
           path: build/macos/
+      - name: Create GitHub release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: Latest release version for MacOS
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: l10n-editor-macos.zip
+          asset_name: l10n-editor-macos.zip
+          asset_content_type: application/zip
