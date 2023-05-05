@@ -56,37 +56,27 @@ jobs:
         with:
           name: l10n_editor-macos.zip
           path: l10n_editor-macos.zip
-
-  create-release:
+  release:
     runs-on: ubuntu-latest
     permissions: write-all
     needs:
-      - build-windows
       - build-macos
+      - build-windows
     steps:
-      - name: Create GitHub release
+      - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: Latest release version for Windows and MacOS
+          release_name: Release ${{ github.ref }}
+          body: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
 
       - name: Upload Release Asset
-        id: upload-macos-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: l10n_editor-macos.zip
-          asset_name: l10n_editor-macos.zip
-          asset_content_type: application/zip
-
-      - name: Upload Release Asset
-        id: upload-windows-asset
+        id: upload-windows
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -94,4 +84,14 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: l10n_editor-windows.zip
           asset_name: l10n_editor-windows.zip
+          asset_content_type: application/zip
+      - name: Upload Release Asset
+        id: upload-macos
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: l10n_editor-macos.zip
+          asset_name: l10n_editor-macos.zip
           asset_content_type: application/zip
