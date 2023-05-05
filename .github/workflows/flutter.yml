@@ -25,7 +25,7 @@ jobs:
           printenv | grep SENTRY_DSN > .env
           printenv | grep DEVOPS_URL >> .env
           flutter build windows
-          zip l10n_editor-windows.zip -r build/windows/runner/Release/*
+          7z a -r l10n_editor-windows.zip build/windows/runner/Release/*
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
