@@ -57,6 +57,7 @@ jobs:
           name: l10n_editor-macos.zip
           path: l10n_editor-macos.zip
   create-release:
+    permissions: write-all
     needs: [build-windows, build-macos]
     runs-on: ubuntu-latest
     steps:
