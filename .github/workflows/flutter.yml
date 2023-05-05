@@ -84,7 +84,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./l10n_editor-windows.zip
+          asset_path: l10n_editor-windows.zip
           asset_name: l10n_editor-windows.zip
           asset_content_type: application/zip
       - name: Upload MacOS Build
@@ -93,6 +93,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./l10n_editor-macos.zip
+          asset_path: l10n_editor-macos.zip
           asset_name: l10n_editor-macos.zip
           asset_content_type: application/zip
