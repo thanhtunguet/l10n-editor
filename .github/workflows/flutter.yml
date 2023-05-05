@@ -1,9 +1,11 @@
 name: Flutter Windows and macOS Build
-on: push
-
+on:
+  push:
+    tags:
+      - "*"
 env:
-  SENTRY_DSN: "{{ secrets.SENTRY_DSN }}"
-  DEVOPS_URL: "{{ secrets.DEVOPS_URL }}"
+  SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+  DEVOPS_URL: ${{ secrets.DEVOPS_URL }}
 
 jobs:
   build:
