@@ -41,9 +41,12 @@ class L10nEditorApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<EditorBloc>(create: (context) => getIt.get<EditorBloc>()),
+        BlocProvider<EditorBloc>(
+          create: (context) => getIt.get<EditorBloc>(),
+        ),
         BlocProvider<ProjectBloc>(
-            create: (context) => getIt.get<ProjectBloc>()),
+          create: (context) => getIt.get<ProjectBloc>(),
+        ),
       ],
       child: MaterialApp.router(
         title: APP_NAME,
