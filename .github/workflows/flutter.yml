@@ -57,15 +57,12 @@ jobs:
           name: l10n_editor-macos.zip
           path: l10n_editor-macos.zip
   release:
+    runs-on: ubuntu-latest
     permissions: write-all
     needs:
       - build-macos
       - build-windows
-    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
