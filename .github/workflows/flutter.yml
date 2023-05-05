@@ -8,50 +8,50 @@ env:
   DEVOPS_URL: ${{ secrets.DEVOPS_URL }}
 
 jobs:
-  build:
-    runs-on: windows-latest
-    permissions: write-all
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v1
-        with:
-          channel: "stable"
-      - name: Build for Windows
-        run: |
-          flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
-          printenv | grep SENTRY_DSN > .env
-          printenv | grep DEVOPS_URL >> .env
-          flutter build windows
+  # build:
+  #   runs-on: windows-latest
+  #   permissions: write-all
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+  #     - name: Set up Flutter
+  #       uses: subosito/flutter-action@v1
+  #       with:
+  #         channel: "stable"
+  #     - name: Build for Windows
+  #       run: |
+  #         flutter pub get
+  #         flutter pub run build_runner build --delete-conflicting-outputs
+  #         printenv | grep SENTRY_DSN > .env
+  #         printenv | grep DEVOPS_URL >> .env
+  #         flutter build windows
 
-      - name: Archive artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: windows-build
-          path: build/windows/
+  #     - name: Archive artifacts
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: windows-build
+  #         path: build/windows/
 
-      - name: Create GitHub release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: Latest release version for Windows
+  #     - name: Create GitHub release
+  #       id: create_release
+  #       uses: actions/create-release@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         tag_name: ${{ github.ref }}
+  #         release_name: ${{ github.ref }}
+  #         body: Latest release version for Windows
 
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/windows/
-          asset_name: windows-build
-          asset_content_type: application/zip
+  #     - name: Upload Release Asset
+  #       id: upload-release-asset
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ steps.create_release.outputs.upload_url }}
+  #         asset_path: build/windows/
+  #         asset_name: windows-build
+  #         asset_content_type: application/zip
 
   build-macos:
     runs-on: macos-latest
@@ -70,11 +70,12 @@ jobs:
           printenv | grep SENTRY_DSN > .env
           printenv | grep DEVOPS_URL >> .env
           flutter build macos
+          zip l10n_editor.zip -r build/macos/Build/Products/Release/l10n_manipulator.app/
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
           name: macos-build
-          path: build/macos/
+          path: l10n_editor.zip
       - name: Create GitHub release
         id: create_release
         uses: actions/create-release@v1
@@ -92,6 +93,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/macos/
+          asset_path: l10n_editor.zip
           asset_name: macos-build
           asset_content_type: application/zip

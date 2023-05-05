@@ -17,7 +17,7 @@ class FigmaRepository extends HttpRepository {
 
   Future<FileResponse> file(String apiKey, String fileKey) async {
     RegExp figmaRegex = RegExp(r'\/file\/([a-zA-Z0-9]+)\/');
-    String? figmaFileKey = figmaRegex.stringMatch(fileKey)?.split('/')?[2];
+    String? figmaFileKey = figmaRegex.stringMatch(fileKey)?.split('/')[2];
     var response = await get("/files/$figmaFileKey", options: headers(apiKey));
     return FileResponse.fromJson(response.data);
   }

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:l10n_editor/blocs/editor/editor_bloc.dart';
 import 'package:l10n_editor/config/consts.dart';
 import 'package:l10n_editor/l10n_editor_app.dart';
-import 'package:l10n_editor/repositories/editor.dart';
+import 'package:l10n_editor/widgets/editor.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
 @reflector
@@ -87,7 +87,7 @@ class _EditorFormPageState extends State<EditorFormPage> {
           return AlertDialog(
             title: Text(AppLocalizations.of(context)!.figma_api_key),
             content:
-            Text(AppLocalizations.of(context)!.keyword_not_deleted_desc),
+                Text(AppLocalizations.of(context)!.keyword_not_deleted_desc),
             actions: [
               TextButton(
                 onPressed: () {

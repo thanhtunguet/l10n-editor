@@ -7,7 +7,7 @@ import 'package:l10n_editor/l10n_editor_app.dart';
 import 'package:l10n_editor/models/azure.dart';
 import 'package:l10n_editor/models/git_object.dart';
 import 'package:l10n_editor/repositories/azure_devops_repository.dart';
-import 'package:l10n_editor/repositories/editor.dart';
+import 'package:l10n_editor/widgets/editor.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
 @reflector
