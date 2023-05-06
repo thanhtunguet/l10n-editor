@@ -9,6 +9,7 @@ import 'package:l10n_editor/main.dart';
 import 'package:l10n_editor/pages/azure_project_page.dart';
 import 'package:l10n_editor/pages/editor_form_page.dart';
 import 'package:l10n_editor/pages/project_config_page.dart';
+import 'package:l10n_editor/pages/sync_figma_page.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
 import 'l10n_editor_app.dart';
@@ -32,6 +33,10 @@ class L10nEditorApp extends StatelessWidget {
       GoRoute(
         path: getRoutingKey(FigmaConfigPage),
         builder: (context, state) => const FigmaConfigPage(),
+      ),
+      GoRoute(
+        path: getRoutingKey(SyncFigmaPage),
+        builder: (context, state) => const SyncFigmaPage(),
       ),
     ],
   );

@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,10 +7,9 @@ import 'package:l10n_editor/blocs/project/project_bloc.dart';
 import 'package:l10n_editor/config/consts.dart';
 import 'package:l10n_editor/config/project_type.dart';
 import 'package:l10n_editor/l10n_editor_app.dart';
-import 'package:l10n_editor/main.dart';
 import 'package:l10n_editor/pages/azure_project_page.dart';
 import 'package:l10n_editor/pages/editor_form_page.dart';
-import 'package:l10n_editor/repositories/figma_repository.dart';
+import 'package:l10n_editor/pages/sync_figma_page.dart';
 import 'package:l10n_editor/widgets/home_icon.dart';
 import 'package:truesight_flutter/truesight_flutter.dart';
 
@@ -69,13 +65,6 @@ class _FigmaConfigPageState extends State<FigmaConfigPage> {
     }
   }
 
-  String? _validateFileKey(value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter Figma File Key';
-    }
-    return null;
-  }
-
   String? _validateApiKey(value) {
     if (value == null || value.isEmpty) {
       return AppLocalizations.of(context)!.enter_figma_api_key;
@@ -126,52 +115,6 @@ class _FigmaConfigPageState extends State<FigmaConfigPage> {
     );
   }
 
-  _syncFigma() async {
-    var state = getIt.get<ProjectBloc>().state;
-    var figmaRepository = FigmaRepository();
-    var response = await figmaRepository.file(
-        state.projectConfig!.figmaApiKey, state.projectConfig!.fileKey);
-    var textNodes = figmaRepository.findTextNodes(response);
-    var directory = await FilePicker.platform.getDirectoryPath();
-    if (directory == null) {
-      return;
-    }
-    var supportedLocales = const [
-      Locale('vi', 'vn'),
-      Locale('en', 'us'),
-    ];
-    var jsonObject = {};
-    for (var node in textNodes) {
-      jsonObject[node.name!.replaceAll('label_', '')] = node.characters;
-    }
-    supportedLocales.forEach((locale) {
-      jsonObject[LOCALE_KEY] = locale.languageCode;
-      var arbFile = File("$directory/lib/l10n/intl_${locale.languageCode}.arb");
-      var encoder = const JsonEncoder.withIndent('  ');
-      arbFile.writeAsStringSync(encoder.convert(jsonObject));
-    });
-    _showSuccess();
-  }
-
-  _showSuccess() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Export success'),
-          content: Text('All locales exported'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(AppLocalizations.of(context)!.action_ok),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -200,13 +143,6 @@ class _FigmaConfigPageState extends State<FigmaConfigPage> {
                       labelText: AppLocalizations.of(context)!.figma_api_key,
                     ),
                     validator: _validateApiKey,
-                  ),
-                  TextFormField(
-                    controller: _fileKeyController,
-                    decoration: const InputDecoration(
-                      labelText: 'Figma Link:',
-                    ),
-                    validator: _validateFileKey,
                   ),
                   const SizedBox(height: 16.0),
                   const Text('Project Type'),
@@ -250,7 +186,11 @@ class _FigmaConfigPageState extends State<FigmaConfigPage> {
                       HomeIcon(
                         label: 'Sync Figma',
                         icon: Icons.cloud_sync,
-                        onPressed: _syncFigma,
+                        onPressed: () {
+                          GoRouter.of(context).push(
+                            getRoutingKey(SyncFigmaPage),
+                          );
+                        },
                       ),
                       HomeIcon(
                         label: AppLocalizations.of(context)!.action_open,
